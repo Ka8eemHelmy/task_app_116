@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:task_app_116/view/screens/auth/login_screen.dart';
+import 'package:task_app_116/view/screens/maps/google_maps_screen.dart';
 import 'package:task_app_116/view/screens/tasks/tasks_screen.dart';
 import 'package:task_app_116/view_model/data/local/shared_helper.dart';
 import 'package:task_app_116/view_model/data/local/shared_keys.dart';
@@ -19,9 +20,11 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     Future.delayed(const Duration(seconds: 1), () {
-      if(SharedHelper.getData(SharedKeys.uid) == null){
+      Navigation.pushAndRemove(context, GoogleMapsScreen());
+      return;
+      if (SharedHelper.getData(SharedKeys.uid) == null) {
         Navigation.pushAndRemove(context, const LoginScreen());
-      }else{
+      } else {
         Navigation.pushAndRemove(context, const TasksScreen());
       }
     });

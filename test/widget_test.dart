@@ -12,6 +12,12 @@ import 'package:task_app_116/my_app.dart';
 
 
 void main() {
+
+  test('Sum Function', () {
+    expect(Sum().sum(12, 8), 20);
+  });
+
+
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(const MyApp());
@@ -28,4 +34,11 @@ void main() {
     expect(find.text('0'), findsNothing);
     expect(find.text('1'), findsOneWidget);
   });
+}
+
+
+class Sum {
+  int sum(int a, int b) {
+    return a + b;
+  }
 }
