@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "124314700873",
+    "project_id": "group-116",
+    "storage_bucket": "group-116.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:124314700873:android:821310f83ff80d35718398",
+        "android_client_info": {
+          "package_name": "com.eraasoft.task_app_116"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD_dlQnqXlTnRTOxgQleFGPQrdPdFHtQwc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

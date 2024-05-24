@@ -28,5 +28,11 @@ abstract class  LocaleKeys {
   static const yes = 'yes';
   static const no = 'no';
   static const addPhotoToYourNote = 'addPhotoToYourNote';
+  static const authError = 'authError';
+  static const noMoreDataToLoad = 'noMoreDataToLoad';
+  static const registerSuccessfully = 'registerSuccessfully';
+  static const loginSuccessfully = 'loginSuccessfully';
+  static const forgetPassword = 'forgetPassword';
+  static const editTask = 'editTask';
 
 }

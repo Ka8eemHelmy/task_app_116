@@ -19,7 +19,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     Future.delayed(const Duration(seconds: 1), () {
-      if(SharedHelper.getData(SharedKeys.token) == null){
+      if(SharedHelper.getData(SharedKeys.uid) == null){
         Navigation.pushAndRemove(context, const LoginScreen());
       }else{
         Navigation.pushAndRemove(context, const TasksScreen());

@@ -1,19 +1,22 @@
 import 'dart:io';
-
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:task_app_116/translation/locale_keys.g.dart';
 import 'package:task_app_116/view_model/cubits/tasks_cubit/tasks_cubit.dart';
+import 'package:task_app_116/view_model/themes/light_theme.dart';
 import 'package:task_app_116/view_model/utils/app_colors.dart';
+
+import '../../../view_model/utils/app_assets.dart';
 
 class AddTaskScreen extends StatelessWidget {
   const AddTaskScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    var cubit = TasksCubit.get(context);
+    var cubit = TasksCubit.get(context)..clearData();
     return Padding(
       padding:
           EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
@@ -37,6 +40,9 @@ class AddTaskScreen extends StatelessWidget {
               TextFormField(
                 controller: cubit.titleController,
                 textInputAction: TextInputAction.next,
+                onTapOutside: (focus){
+                  FocusScope.of(context).unfocus();
+                },
                 decoration: InputDecoration(
                   labelText: LocaleKeys.title.tr(),
                   prefixIcon: const Icon(
@@ -83,8 +89,7 @@ class AddTaskScreen extends StatelessWidget {
                     firstDate: DateTime.now(),
                     lastDate: DateTime(DateTime.now().year + 10),
                   ).then((value) {
-                    cubit.startDateController.text = DateFormat('yyyy-MM-dd')
-                        .format(value ?? DateTime.now());
+                    cubit.startDateController.text = (value ?? DateTime.now()).toStringDate();
                   });
                 },
                 decoration: InputDecoration(
@@ -119,8 +124,7 @@ class AddTaskScreen extends StatelessWidget {
                     firstDate: DateTime.now(),
                     lastDate: DateTime(DateTime.now().year + 10),
                   ).then((value) {
-                    cubit.endDateController.text = DateFormat('yyyy-MM-dd')
-                        .format(value ?? DateTime.now());
+                    cubit.endDateController.text = (value ?? DateTime.now()).toStringDate();
                   });
                 },
                 validator: (value) {
@@ -191,7 +195,7 @@ class AddTaskScreen extends StatelessWidget {
               BlocBuilder<TasksCubit, TasksState>(
                 builder: (context, state) {
                   return Visibility(
-                    visible: state is AddTaskLoadingState,
+                    visible: state is AddTaskLoadingState || state is UploadImageToFireStorageLoadingState,
                     child: const LinearProgressIndicator(),
                   );
                 },
@@ -200,9 +204,12 @@ class AddTaskScreen extends StatelessWidget {
                 height: 12.h,
               ),
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   if (cubit.formKey.currentState!.validate()) {
-                    cubit.addTask().then((value) {
+                    final player = AudioPlayer();
+                    final duration = await player.setAsset(AppAssets.yallaBena);
+                    player.play();
+                    cubit.addTaskFirebase().then((value) {
                       Navigator.pop(context);
                     });
                   }

@@ -24,3 +24,31 @@ final class AddTaskSuccessState extends TasksState {}
 final class AddTaskErrorState extends TasksState {}
 
 final class SelectImageState extends TasksState {}
+
+final class GetMoreTasksLoadingState extends TasksState {}
+
+final class GetMoreTasksSuccessState extends TasksState {}
+
+final class GetMoreTasksErrorState extends TasksState {
+  final String msg;
+
+  GetMoreTasksErrorState(this.msg);
+}
+
+final class EditTaskLoadingState extends TasksState {}
+
+final class EditTaskSuccessState extends TasksState {}
+
+final class EditTaskErrorState extends TasksState {}
+
+final class DeleteTaskLoadingState extends TasksState {}
+
+final class DeleteTaskSuccessState extends TasksState {}
+
+final class DeleteTaskErrorState extends TasksState {}
+
+final class UploadImageToFireStorageLoadingState extends TasksState {}
+
+final class UploadImageToFireStorageSuccessState extends TasksState {}
+
+final class UploadImageToFireStorageErrorState extends TasksState {}

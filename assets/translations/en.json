@@ -25,5 +25,11 @@
   "deleteConfirmation" : "Are You Sure You Want To Delete?",
   "yes" : "Yes",
   "no" : "No",
-  "addPhotoToYourNote" : "Add Photo To Your Note"
+  "addPhotoToYourNote" : "Add Photo To Your Note",
+  "authError" : "You Are Not Authenticated, Please Make A new Login",
+  "noMoreDataToLoad"  : "No More Data To Load",
+  "registerSuccessfully" : "You Have Registered Successfully",
+  "loginSuccessfully" : "You Have Logged In Successfully",
+  "forgetPassword" : "Forget Password",
+  "editTask" : "Edit Task"
 }

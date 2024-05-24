@@ -1,11 +1,15 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:task_app_116/translation/locale_keys.g.dart';
 import 'package:task_app_116/view/screens/auth/login_screen.dart';
+import 'package:task_app_116/view/screens/tasks/edit_task_screen.dart';
 import 'package:task_app_116/view_model/cubits/tasks_cubit/tasks_cubit.dart';
 import 'package:task_app_116/view_model/data/local/shared_helper.dart';
+import 'package:task_app_116/view_model/utils/app_assets.dart';
 import 'package:task_app_116/view_model/utils/app_colors.dart';
 import 'package:task_app_116/view_model/utils/navigation.dart';
 import 'package:task_app_116/view_model/utils/snackbar.dart';
@@ -18,7 +22,8 @@ class TasksScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider.value(
-      value: TasksCubit.get(context)..getTasks(),
+      value: TasksCubit.get(context)..getTasksFirebase(),
+      // ..addScrollListener(),
       child: Scaffold(
         appBar: AppBar(
           iconTheme: const IconThemeData(
@@ -36,9 +41,9 @@ class TasksScreen extends StatelessWidget {
           actions: [
             IconButton(
               onPressed: () {
-                if(context.locale.toString() == 'en'){
+                if (context.locale.toString() == 'en') {
                   context.setLocale(const Locale('ar'));
-                }else{
+                } else {
                   context.setLocale(const Locale('en'));
                 }
               },
@@ -55,7 +60,10 @@ class TasksScreen extends StatelessWidget {
               ),
             ),
             IconButton(
-              onPressed: () {},
+              onPressed: () {
+                SharedHelper.clearData();
+                Navigation.pushAndRemove(context, const LoginScreen());
+              },
               icon: const Icon(
                 Icons.exit_to_app_rounded,
                 color: AppColors.white,
@@ -64,13 +72,18 @@ class TasksScreen extends StatelessWidget {
           ],
         ),
         body: BlocConsumer<TasksCubit, TasksState>(
-          listener: (context, state) {
-            if (state is UnauthenticatedState) {
-              SnackBarHelper.showError(context,
-                  'You Are Not Authenticated, Please Make A new Login');
-              SharedHelper.clearData();
-              Navigation.pushAndRemove(context, const LoginScreen());
+          listener: (context, state) async {
+            if(state is AddTaskSuccessState || state is EditTaskSuccessState || state is DeleteTaskSuccessState){
+              final player = AudioPlayer();
+              final duration = await player.setAsset(AppAssets.dartYaSay3);
+              player.play();
             }
+            // if (state is UnauthenticatedState) {
+            //   SnackBarHelper.showError(context,
+            //       'You Are Not Authenticated, Please Make A new Login');
+            //   SharedHelper.clearData();
+            //   Navigation.pushAndRemove(context, const LoginScreen());
+            // }
           },
           builder: (context, state) {
             var cubit = TasksCubit.get(context);
@@ -78,17 +91,51 @@ class TasksScreen extends StatelessWidget {
               visible: state is! GetTasksLoadingState,
               replacement:
                   const Center(child: CircularProgressIndicator.adaptive()),
-              child: ListView.separated(
-                padding: EdgeInsets.all(12.sp),
-                itemBuilder: (context, index) {
-                  return TaskWidget(
-                    task: cubit.tasks[index],
-                  );
-                },
-                separatorBuilder: (context, index) => SizedBox(
-                  height: 12.h,
+              child: SafeArea(
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: RefreshIndicator(
+                        onRefresh: () async {
+                          return await cubit.getTasksFirebase();
+                        },
+                        child: ListView.separated(
+                          controller: cubit.scrollController,
+                          padding: EdgeInsets.all(12.sp),
+                          itemBuilder: (context, index) {
+                            return TaskWidget(
+                              task: cubit.tasks[index],
+                              onTap: () {
+                                showModalBottomSheet(
+                                  context: context,
+                                  enableDrag: true,
+                                  showDragHandle: true,
+                                  isDismissible: true,
+                                  isScrollControlled: true,
+                                  builder: (context) {
+                                    return EditTaskScreen(index: index,);
+                                  },
+                                );
+                              },
+                            );
+                          },
+                          separatorBuilder: (context, index) => SizedBox(
+                            height: 12.h,
+                          ),
+                          itemCount: cubit.tasks.length,
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 6.h,
+                    ),
+                    if (cubit.getMoreLoading) const CircularProgressIndicator(),
+                    if (!cubit.moreData)
+                      Text(
+                        LocaleKeys.noMoreDataToLoad.tr(),
+                      ),
+                  ],
                 ),
-                itemCount: cubit.tasks.length,
               ),
             );
           },

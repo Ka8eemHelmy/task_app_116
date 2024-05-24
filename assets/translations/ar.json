@@ -25,5 +25,11 @@
   "deleteConfirmation" : "هل أنت متأكد من عملية الحذف؟",
   "yes" : "نعم",
   "no" : "لا",
-  "addPhotoToYourNote" : "أدخل صوره"
+  "addPhotoToYourNote" : "أدخل صوره",
+  "authError" : "أنت غير موثوق، رجاء تسجيل الدخول",
+  "noMoreDataToLoad"  : "لا يوجد المزيد من البيانات للتحميل",
+  "registerSuccessfully" : "لقد قمت بالتسجيل بنجاح",
+  "loginSuccessfully" : "لقد قمت بتسجيل الدخول بنجاح",
+  "forgetPassword" : "نسيت كلمة المرور؟",
+  "editTask" : "تعديل المهمة"
 }

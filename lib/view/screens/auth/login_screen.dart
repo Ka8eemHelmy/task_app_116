@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:task_app_116/translation/locale_keys.g.dart';
+import 'package:task_app_116/view/screens/auth/register_screen.dart';
 import 'package:task_app_116/view_model/cubits/auth_cubit/auth_cubit.dart';
 import 'package:task_app_116/view_model/utils/app_assets.dart';
 import 'package:task_app_116/view_model/utils/navigation.dart';
@@ -57,16 +58,33 @@ class LoginScreen extends StatelessWidget {
               SizedBox(
                 height: 6.h,
               ),
-              TextFormField(
-                controller: AuthCubit.get(context).passwordController,
-                decoration: InputDecoration(
-                  labelText: LocaleKeys.password.tr(),
-                ),
-                validator: (value) {
-                  if ((value ?? '').trim().isEmpty) {
-                    return LocaleKeys.passwordError.tr();
-                  }
-                  return null;
+              BlocBuilder<AuthCubit, AuthState>(
+                buildWhen: (previous, current) {
+                  return current is ChangeHidePasswordState;
+                },
+                builder: (context, state) {
+                  return TextFormField(
+                    controller: AuthCubit.get(context).passwordController,
+                    decoration: InputDecoration(
+                        labelText: LocaleKeys.password.tr(),
+                        suffixIcon: IconButton(
+                          onPressed: () {
+                            AuthCubit.get(context).changeHidePassword();
+                          },
+                          icon: Icon(
+                            AuthCubit.get(context).hidePassword
+                                ? Icons.visibility_rounded
+                                : Icons.visibility_off_outlined,
+                          ),
+                        )),
+                    obscureText: AuthCubit.get(context).hidePassword,
+                    validator: (value) {
+                      if ((value ?? '').trim().isEmpty) {
+                        return LocaleKeys.passwordError.tr();
+                      }
+                      return null;
+                    },
+                  );
                 },
               ),
               SizedBox(height: 12.h),
@@ -83,7 +101,9 @@ class LoginScreen extends StatelessWidget {
                     width: 6.w,
                   ),
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigation.push(context, const RegisterScreen());
+                    },
                     child: Text(
                       LocaleKeys.register.tr(),
                       style: TextStyle(
@@ -105,6 +125,9 @@ class LoginScreen extends StatelessWidget {
                     SnackBarHelper.showError(context, state.msg);
                   }
                 },
+                buildWhen: (previous, current) {
+                  return current is! ChangeHidePasswordState;
+                },
                 builder: (context, state) {
                   if (state is LoginLoadingState) {
                     return const CircularProgressIndicator.adaptive();
@@ -115,7 +138,7 @@ class LoginScreen extends StatelessWidget {
                           .formKey
                           .currentState!
                           .validate()) {
-                        AuthCubit.get(context).login();
+                        AuthCubit.get(context).loginFirebase();
                       }
                     },
                     child: Text(
@@ -124,6 +147,17 @@ class LoginScreen extends StatelessWidget {
                     ),
                   );
                 },
+              ),
+              SizedBox(
+                height: 12.h,
+              ),
+              TextButton(
+                onPressed: () {
+                  AuthCubit.get(context).forgetPasswordFirebase();
+                },
+                child: Text(
+                  LocaleKeys.forgetPassword.tr(),
+                ),
               ),
             ],
           ),

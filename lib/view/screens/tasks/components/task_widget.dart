@@ -5,7 +5,8 @@ import '../../../../view_model/utils/app_colors.dart';
 
 class TaskWidget extends StatelessWidget {
   final Task task;
-  const TaskWidget({required this.task, super.key});
+  final void Function()? onTap;
+  const TaskWidget({required this.task, this.onTap, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +14,7 @@ class TaskWidget extends StatelessWidget {
       color: AppColors.cyan.withOpacity(0.1),
       borderRadius: BorderRadius.circular(12.r),
       child: InkWell(
-        onTap: () {},
+        onTap: onTap,
         borderRadius: BorderRadius.circular(12.r),
         child: Container(
           padding: EdgeInsets.all(12.sp),
